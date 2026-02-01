@@ -1,0 +1,25 @@
+# Build output
+Debug/
+Release/
+build/
+
+# Object files
+*.o
+*.d
+*.elf
+*.map
+*.lst
+*.su
+
+# STM32CubeIDE
+.settings/
+*.launch
+*.log
+
+# IDE
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
