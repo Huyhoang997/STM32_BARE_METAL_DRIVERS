@@ -18,6 +18,7 @@ Project được tổ chức theo hướng:
 - Các ví dụ (examples) sử dụng trực tiếp driver để kiểm chứng chức năng
 
 Các module hiện có:
+- Stm32f401xx.h
 - GPIO
 - TIMER
 - NVIC
