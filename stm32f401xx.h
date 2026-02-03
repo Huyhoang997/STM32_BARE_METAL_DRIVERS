@@ -13,6 +13,16 @@
 #include "gpio.h"
 #include "cortex_m4.h"
 
+/*Flash registers definition structure */
+typedef struct
+{
+	volatile uint32_t ACR;
+	volatile uint32_t KEYR;
+	volatile uint32_t OPTKEYR;
+	volatile uint32_t SR;
+	volatile uint32_t CR;
+	volatile uint32_t OPTCR;
+} FLASH_RegDef_t;
 
 
 /* RCC register definition structure*/
@@ -101,12 +111,12 @@ typedef struct
 	volatile uint32_t CNT;
 	volatile uint32_t PSC;
 	volatile uint32_t ARR;
-	uint32_t RSEVERED1;
+	uint32_t RESERVED1;
 	volatile uint32_t CCR1;
 	volatile uint32_t CCR2;
 	volatile uint32_t CCR3;
 	volatile uint32_t CCR4;
-	uint32_t RSEVERED2;
+	uint32_t RESERVED2;
 	volatile uint32_t DCR;
 	volatile uint32_t DMAR;
 	volatile uint32_t OR;
@@ -119,7 +129,10 @@ typedef struct
 #define APB2_BASE_ADDR					(0x40010000UL)
 #define APB1_BASE_ADDR					(0x40000000UL)
 
-
+/* Define Flash base address */
+#define FLASH_BASE_ADDR					((AHB1_BASE_ADDR) + 0x3C00UL)
+/* Define macro for Flash address */
+#define FLASH							((FLASH_RegDef_t *)FLASH_BASE_ADDR)
 /* Define RCC base address */
 #define RCC_BASE_ADDR					((AHB1_BASE_ADDR) + 0x3800UL)
 /* Define macro for RCC address */

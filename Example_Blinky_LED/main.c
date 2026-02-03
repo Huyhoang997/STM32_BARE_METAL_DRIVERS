@@ -24,6 +24,13 @@ GPIO_Config_t led_blink = {
 		.GPIO_PUPD = GPIO_PULL_UP
 };
 
+GPIO_Config_t led_blink1 = {
+		.GPIO_MODE = GPIO_MODE_OUTPUT,
+		.GPIO_PIN = GPIO_PIN_0,
+		.GPIO_OUT_TYPE = GPIO_OUTPUT_PUSH_PULL,
+		.GPIO_PUPD = GPIO_PULL_UP
+};
+
 GPIO_Config_t button_state = {
 		.GPIO_MODE = GPIO_MODE_INPUT,
 		.GPIO_PIN = GPIO_PIN_0,
@@ -37,7 +44,7 @@ TIMER_Config_t timer_config  = {
 		.CounterMode = COUNTER_MODE_UP,
 		.Prescaler = 15999,
 		.is_enable_OnePulse = false,
-		.UpdateSource = TIMER_UPDATE_COUNTER_ONLY,
+		.UpdateSource = TIMER_UPDATE_ALL_EVENT,
 		.is_enable_Preload = false,
 		.CounterValue = 0
 };
@@ -45,22 +52,47 @@ TIMER_Config_t timer_config  = {
 uint32_t test = 0;
 uint32_t result = 0;
 
+volatile uint32_t timer_count = 0;
+volatile uint32_t button_count = 0;
+
+/* Timer interrupt - Priority 0 (CAO NHẤT) */
+void TIM2_IRQHandler(void)
+{
+    if(TIMER2->SR & (1U << 0))
+    {
+        TIMER2->SR &= ~(1U << 0);
+        GPIO_PinOutToggle(GPIOA, GPIO_PIN_1);
+    }
+}
+
+/* Button interrupt - Priority 3 (THẤP HƠN) */
+void EXTI0_IRQHandler(void)
+{
+    if(EXTI->PR & (1U << 0))
+    {
+        EXTI->PR = (1U << 0);
+        GPIO_PinOutToggle(GPIOA, GPIO_PIN_0);  // LED khác
+    }
+}
+
 int main(void)
 {
+	SCB_AIRCR = (0x5FA << 16) | (0U << 8);
+
     GPIO_Init_Mode(GPIOA, &led_blink);
+    GPIO_Init_Mode(GPIOA, &led_blink1);
+    TIMER_BASE_Init_IT(TIMER2, &timer_config, 0);
     GPIO_Init_IT(GPIOB, &button_state, 2);
-    TIMER_Base_Init(TIMER11, &timer_config);
-    result = TIMER11->ARR;
-    TIMER_Start(TIMER11);
+
+    //result = TIMER2->ARR;
+    TIMER_Start(TIMER2);
 	for(;;)
 	{
-		test = TIMER11->CNT;
-		if (test == result) // UIF
-		{
+		test = TIMER2->CNT;
+		//if (test == result) // UIF
+		//{
 			//TIMER2->SR &= ~(1U << 0);
-			GPIO_PinOutToggle(GPIOA, GPIO_PIN_1);
-		}
+		//	GPIO_PinOutToggle(GPIOA, GPIO_PIN_1);
+		//}
 	}
-
-
 }
