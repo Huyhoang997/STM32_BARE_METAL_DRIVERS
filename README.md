@@ -60,6 +60,7 @@ typedef struct
 Thư mục `Example_Blinky_LED` cung cấp một ví dụ cơ bản nhằm **minh họa cách sử dụng các driver đã xây dựng** trong project.
 
 Ví dụ này:
+- Test các function của TIMER_IRQHandling và EXTI0_IRQHandling
 - Sử dụng **GPIO driver** để cấu hình chân output
 - Sử dụng **Timer driver** để tạo delay cho LED blinking
 - Không sử dụng HAL hoặc LL, toàn bộ cấu hình thực hiện ở mức **register-level**
