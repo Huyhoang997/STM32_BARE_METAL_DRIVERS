@@ -55,7 +55,7 @@ uint32_t result = 0;
 volatile uint32_t timer_count = 0;
 volatile uint32_t button_count = 0;
 
-/* Timer interrupt - Priority 0 (CAO NHẤT) */
+/* Timer interrupt */
 void TIM2_IRQHandler(void)
 {
     if(TIMER2->SR & (1U << 0))
@@ -65,7 +65,7 @@ void TIM2_IRQHandler(void)
     }
 }
 
-/* Button interrupt - Priority 3 (THẤP HƠN) */
+/* Button interrupt */
 void EXTI0_IRQHandler(void)
 {
     if(EXTI->PR & (1U << 0))
