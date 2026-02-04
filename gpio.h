@@ -109,12 +109,31 @@ typedef enum
      ((GPIO_Pin >= GPIO_PIN_5)  && (GPIO_Pin <= GPIO_PIN_9))  ? EXTI_IRQ_5_9 : \
      ((GPIO_Pin >= GPIO_PIN_10) && (GPIO_Pin <= GPIO_PIN_15)) ? EXTI_IRQ_10_15 : 0)
 
+
+ /* ====================================================
+ * User API
+ * configuration functions for application code.
+ * ==================================================== */
+
+/* Init GPIO port */	 
 void GPIO_Init_Mode(GPIO_RegDef_t *GPIOx, GPIO_Config_t *GPIO_Config);
+
+/* De-Init the GPIO port */
 void GPIO_DeInit(GPIO_RegDef_t *GPIOx);
+
+/* Set the GPIO pin to High */
 void GPIO_PinOutSet(GPIO_RegDef_t *GPIOx, uint8_t GPIO_PIN);
+
+/* Set the GPIO pin to Low */
 void GPIO_PinOutClear(GPIO_RegDef_t *GPIOx, uint8_t GPIO_PIN);
+
+/* Toogle value of the GPIO pin */
 GPIO_PinState_Typedef GPIO_PinInRead(GPIO_RegDef_t *GPIOx, uint8_t GPIO_PIN );
+
+/* Read the value of the GPIO */
 void GPIO_PinOutToggle(GPIO_RegDef_t *GPIOx, uint8_t GPIO_PIN);
+
+/* Init GPIO intterupt */
 void GPIO_Init_IT(GPIO_RegDef_t *GPIOx, GPIO_Config_t *GPIO_Config, uint8_t Priority);
 
 
