@@ -10,6 +10,20 @@ Mục tiêu của project là:
 - **Nắm vững clock tree**, bus architecture, và memory system
 - **Viết driver có cấu trúc rõ ràng**, gần với Reference Manual, dễ đọc và dễ mở rộng
 
+## Table of Contents
+
+- [Giới thiệu](#stm32f401-bare-metal-driver-development-repository)
+- [Mục tiêu của Project](#mục-tiêu-của-project)
+- [1. Mục tiêu & Phạm vi](#1-mục-tiêu--phạm-vi)
+- [2. Kiến trúc Tổng thể](#2-kiến-trúc-tổng-thể)
+- [3. stm32f401xx.h – Device Header File](#3-stm32f401xxh--device-header-file)
+- [4. RCC – Reset and Clock Control Module](#4-rcc--reset-and-clock-control-module)
+- [5. FLASH – Flash Access & Wait State](#5-flash--flash-access--wait-state)
+- [6. NVIC – Nested Vector Interrupt Controller](#6-nvic--nested-vector-interrupt-controller)
+- [7. SysTick Timer – System Time Base](#7-systick-timer--system-time-base)
+- [8. Example](#8-example)
+- [Kết luận](#kết-luận)
+- 
 ---
 
 ## 1. Mục tiêu & Phạm vi
