@@ -14,6 +14,7 @@
 #include "cortex_m4.h"
 #include "rcc.h"
 #include "flash.h"
+#include "time.h"
 
 /*Flash registers definition structure */
 typedef struct
@@ -107,17 +108,13 @@ typedef struct
 	volatile uint32_t DIER;
 	volatile uint32_t SR ;
 	volatile uint32_t EGR;
-	volatile uint32_t CCMR1;
-	volatile uint32_t CCMR2;
+	volatile uint32_t CCMR[2];
 	volatile uint32_t CCER;
 	volatile uint32_t CNT;
 	volatile uint32_t PSC;
 	volatile uint32_t ARR;
 	uint32_t RESERVED1;
-	volatile uint32_t CCR1;
-	volatile uint32_t CCR2;
-	volatile uint32_t CCR3;
-	volatile uint32_t CCR4;
+	volatile uint32_t CCR[4];
 	uint32_t RESERVED2;
 	volatile uint32_t DCR;
 	volatile uint32_t DMAR;

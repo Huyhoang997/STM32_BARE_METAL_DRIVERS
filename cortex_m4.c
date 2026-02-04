@@ -9,6 +9,7 @@
 uint32_t SystemCoreClock = 16000000;
 uint32_t uwTick;
 
+/* Enable the IRQ number */
 void NVIC_EnableIRQ(uint8_t IRQNumber)
 {
 	uint8_t index, bitpos;
@@ -20,6 +21,7 @@ void NVIC_EnableIRQ(uint8_t IRQNumber)
 	NVIC->ISER[index] |= (1U << bitpos);
 }
 
+/* Disable the IRQ number */
 void NVIC_DisableIRQ(uint8_t IRQNumber)
 {
 	uint8_t index, bitpos;
@@ -31,6 +33,7 @@ void NVIC_DisableIRQ(uint8_t IRQNumber)
 	NVIC->ICER[index] |= (1U << bitpos);
 }
 
+/* Set priority for the IRQ number */
 void NVIC_SetPriority(uint8_t IRQNumber, uint8_t Priority)
 {
 	uint8_t index, bitpos;
@@ -45,11 +48,12 @@ void NVIC_SetPriority(uint8_t IRQNumber, uint8_t Priority)
 	NVIC->IPR[index] |= ((Priority << 4) << (bitpos * 8U));
 }
 
+/* Systick Init function */
 void SYS_InitTick(void)
 {
 	uint32_t reload;
 	/* Get the system xx(ms) overflow from the RCC clock */
-	reload = SystemCoreClock / 1000;
+	reload = SystemCoreClock / 1000;		// Overflow every 1ms
 	STK->LOAD = reload - 1;
 	STK->VAL = 0;
 	/* Configure source clock & interrupt & counter mode for the Systick  */
@@ -62,9 +66,10 @@ void SysTick_Handler(void)
 	uwTick++;
 }
 
-/* System level (SL) delay millisecond */
+/* System level(SL) delay millisecond(ms) */
 void SL_Delay_ms(uint32_t ms)
 {
 	uint32_t start = uwTick;
 	while((uwTick - start) < ms);
 }
+

@@ -3,7 +3,7 @@
 
 #include "stm32f401xx.h"
 
-/* Define macro for the flash wait sate */
+/* Define macro for the flash wait states */
 #define FLASH_LATENCY_0_WS                  0U
 #define FLASH_LATENCY_1_WS                  1U
 #define FLASH_LATENCY_2_WS                  2U 

@@ -114,3 +114,42 @@ void TIMER_BASE_Init_IT(TIMER_RegDef_t *TIMERx, TIMER_Config_t *Timer_Config, ui
 	/* Enable NVIC */
 	NVIC_EnableIRQ(TIMER_TO_IRQ(TIMERx));
 }
+
+void TIMER_OC_Init(TIMER_RegDef_t *TIMERx, uint8_t Channelx, TIMER_OC_Config_t *Timer_OC_Config)
+{
+	uint8_t index = Channelx / 2;
+	uint8_t bitpos = Channelx % 2;
+
+	/* Configure Output Compare mode */
+	TIMERx->CCMR[index] &= ~(7U << ((bitpos * 8) + 4));
+	TIMERx->CCMR[index] |= (Timer_OC_Config->OutputCompareMode << ((bitpos * 8) + 4));
+	/* Configure OC1FE fast mode */
+	TIMERx->CCMR[index] &= ~(1U << ((bitpos * 8) + 2));
+	if(Timer_OC_Config->is_fast_mode)
+	{
+		TIMERx->CCMR[index] |= (OC1FE_ENABLE_FAST_MODE << ((bitpos * 8) + 2));
+	}
+	else 
+	{
+		TIMERx->CCMR[index] |= (OC1FE_DISABLE_FAST_MODE << ((bitpos * 8) + 2));
+	}
+
+	/* Configure OC1FE preload mode */
+
+	/* Enable Output Compare */
+	TIMERx->CCER |= (1U << (Channelx * 4)); 
+}
+
+/* TIMERx PWM configure raw duty cycle */ 
+void TIMER_PWM_SetDutyRaw(TIMER_RegDef_t *TIMERx, uint8_t Timer_CHx, uint32_t duty_raw) 
+{ 
+	TIMERx->CCR[Timer_CHx] = duty_raw; 
+}
+
+/* TIMERx PWM configure duty cycle percent */
+void TIMER_PWM_SetDutyCycle(TIMER_RegDef_t *TIMERx, uint8_t Timer_CHx, uint32_t duty_percent)
+{
+	uint32_t arr = TIMERx->ARR;
+
+	TIMERx->CCR[Timer_CHx] = (duty_percent * (arr + 1)) / 100;
+}

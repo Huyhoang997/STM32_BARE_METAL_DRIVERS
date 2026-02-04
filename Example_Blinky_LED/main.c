@@ -18,10 +18,11 @@
 #include "stm32f401xx.h"
 
 GPIO_Config_t led_blink = {
-		.GPIO_MODE = GPIO_MODE_OUTPUT,
+		.GPIO_MODE = GPIO_MODE_ALT,
 		.GPIO_PIN = GPIO_PIN_1,
 		.GPIO_OUT_TYPE = GPIO_OUTPUT_PUSH_PULL,
-		.GPIO_PUPD = GPIO_PULL_UP
+		.GPIO_PUPD = GPIO_PULL_UP,
+		.GPIO_ALT_MODE = GPIO_ALT_1
 };
 
 GPIO_Config_t led_blink1 = {
@@ -40,18 +41,22 @@ GPIO_Config_t button_state = {
 
 
 TIMER_Config_t timer_config  = {
-		.AutoReload = 1000,
+		.AutoReload = 20000,
 		.ClockDivision = CLOCK_DIVINE_BY_1,
 		.CounterMode = COUNTER_MODE_UP,
-		.Prescaler = 15999,
+		.Prescaler = 15,
 		.is_enable_OnePulse = false,
-		.UpdateSource = TIMER_UPDATE_ALL_EVENT,
+		.UpdateSource = TIMER_UPDATE_COUNTER_ONLY,
 		.is_enable_Preload = false,
 		.CounterValue = 0
 };
 
+TIMER_OC_Config_t pwm_config = {
+		.OutputCompareMode = OC1M_PWM_MODE_1,
+		.is_fast_mode = true
+};
 
-uint32_t test = 0;
+uint32_t servo_test[6] = {5, 6, 7, 8, 9, 10};
 uint32_t result = 0;
 
 volatile uint32_t timer_count = 0;
@@ -83,16 +88,22 @@ int main(void)
 	SYS_InitTick();
     GPIO_Init_Mode(GPIOA, &led_blink);
     GPIO_Init_Mode(GPIOA, &led_blink1);
-    //TIMER_BASE_Init_IT(TIMER2, &timer_config, 3);
+    TIMER_Base_Init(TIMER2, &timer_config);
+	TIMER_OC_Init(TIMER2, TIMER_CHANNEL_2, &pwm_config);
     GPIO_Init_IT(GPIOB, &button_state, 1);
 
     //result = TIMER2->ARR;
     TIMER_Start(TIMER2);
+
+	for(int i = 0; i < 6; i++)
+	{
+	TIMER_PWM_SetDutyCycle(TIMER2, TIMER_CHANNEL_2, servo_test[i]);
+	SL_Delay_ms(1000);
+	}
 	for(;;)
 	{
-		test = TIMER2->CNT;
-		GPIO_PinOutToggle(GPIOA, GPIO_PIN_0);
-		SL_Delay_ms(100);
+		GPIO_PinOutClear(GPIOA, GPIO_PIN_0);
+		SL_Delay_ms(40);
 		
 	}
 }
