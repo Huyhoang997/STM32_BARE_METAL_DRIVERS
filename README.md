@@ -42,6 +42,7 @@ Project được tổ chức theo các nguyên tắc sau:
 - **NVIC** – Nested Vector Interrupt Controller
 - **RCC** – Reset and Clock Control
 - **FLASH** – Flash access & wait state configuration
+- **SysTick** – System Tick timer 
 
 ---
 
