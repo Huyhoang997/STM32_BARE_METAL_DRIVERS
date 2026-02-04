@@ -73,16 +73,17 @@ void EXTI0_IRQHandler(void)
     if(EXTI->PR & (1U << 0))
     {
         EXTI->PR = (1U << 0);
-        GPIO_PinOutToggle(GPIOA, GPIO_PIN_0);  // LED khác
+        //GPIO_PinOutToggle(GPIOA, GPIO_PIN_0);  // LED khác
     }
 }
 
 int main(void)
 {
-	RCC_InitSystemClock(RCC_CLOCK_84MHZ);
+	RCC_InitSystemClock(RCC_CLOCK_16MHZ);
+	SYS_InitTick();
     GPIO_Init_Mode(GPIOA, &led_blink);
     GPIO_Init_Mode(GPIOA, &led_blink1);
-    TIMER_BASE_Init_IT(TIMER2, &timer_config, 3);
+    //TIMER_BASE_Init_IT(TIMER2, &timer_config, 3);
     GPIO_Init_IT(GPIOB, &button_state, 1);
 
     //result = TIMER2->ARR;
@@ -90,10 +91,8 @@ int main(void)
 	for(;;)
 	{
 		test = TIMER2->CNT;
-		//if (test == result) // UIF
-		//{
-			//TIMER2->SR &= ~(1U << 0);
-		//	GPIO_PinOutToggle(GPIOA, GPIO_PIN_1);
-		//}
+		GPIO_PinOutToggle(GPIOA, GPIO_PIN_0);
+		SL_Delay_ms(100);
+		
 	}
 }

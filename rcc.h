@@ -12,7 +12,8 @@
 
 
 /* Define RCC clock source configure enum */
-typedef enum {
+typedef enum 
+{
     RCC_HSI_SOURCE_CLOCK,
     RCC_HSE_SOURCE_CLOCK,
     RCC_PLL_SOURCE_CLOCK

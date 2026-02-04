@@ -23,6 +23,8 @@ void RCC_InitSystemClock(RCC_Clock_Speed_Typedef Clk_Speed)
     switch(Clk_Speed) 
     {
         case RCC_CLOCK_16MHZ:
+            /* Configure gobal variable for Systick timer */
+            SystemCoreClock = 16000000;
             /* Enable HSI */
             RCC->CR |= HSI_ON;
             while(!(RCC->CR & (1U << 1)));    // Wait for the HSI ready flag
@@ -33,7 +35,8 @@ void RCC_InitSystemClock(RCC_Clock_Speed_Typedef Clk_Speed)
 
         case RCC_CLOCK_48MHZ:
             pllm = PLLM_DIVIDE_BY_16; plln = 192U; pllp = PLLP_DIVIDE_BY_4; 
-
+            /* Configure gobal variable for Systick timer */
+            SystemCoreClock = 48000000;
             /* Enable HSI */
             RCC->CR |= HSI_ON;
             while(!(RCC->CR & (1U << 1)));    // Wait for the HSI ready flag
@@ -56,7 +59,8 @@ void RCC_InitSystemClock(RCC_Clock_Speed_Typedef Clk_Speed)
 
         case RCC_CLOCK_64MHZ:
             pllm = PLLM_DIVIDE_BY_8; plln = 192U; pllp = PLLP_DIVIDE_BY_6; 
-
+            /* Configure gobal variable for Systick timer */
+            SystemCoreClock = 64000000;
             /* Enable HSI */
             RCC->CR |= HSI_ON;
             while(!(RCC->CR & (1U << 1)));    // Wait for the HSI ready flag
@@ -80,7 +84,8 @@ void RCC_InitSystemClock(RCC_Clock_Speed_Typedef Clk_Speed)
 
         case RCC_CLOCK_84MHZ:
             pllm = PLLM_DIVIDE_BY_16; plln = 336U; pllp = PLLP_DIVIDE_BY_4;
-
+            /* Configure gobal variable for Systick timer */
+            SystemCoreClock = 84000000;
             /* Enable HSI */
             RCC->CR |= HSI_ON;
             while(!(RCC->CR & (1U << 1)));    // Wait for the HSI ready flag
