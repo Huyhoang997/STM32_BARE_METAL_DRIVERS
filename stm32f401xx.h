@@ -12,6 +12,8 @@
 #include <stdbool.h>
 #include "gpio.h"
 #include "cortex_m4.h"
+#include "rcc.h"
+#include "flash.h"
 
 /*Flash registers definition structure */
 typedef struct
@@ -129,19 +131,24 @@ typedef struct
 #define APB2_BASE_ADDR					(0x40010000UL)
 #define APB1_BASE_ADDR					(0x40000000UL)
 
+
 /* Define Flash base address */
 #define FLASH_BASE_ADDR					((AHB1_BASE_ADDR) + 0x3C00UL)
 /* Define macro for Flash address */
 #define FLASH							((FLASH_RegDef_t *)FLASH_BASE_ADDR)
+
+
 /* Define RCC base address */
 #define RCC_BASE_ADDR					((AHB1_BASE_ADDR) + 0x3800UL)
 /* Define macro for RCC address */
 #define RCC								((RCC_RegDef_t *)RCC_BASE_ADDR)
 
+
 /* Define SYSCFG base address */
 #define SYSCFG_BASE_ADDR				((APB2_BASE_ADDR) + 0x3800UL)
 /* Define macro for SYSCFG address */
 #define SYSCFG							((SYSCFG_RegDef_t *)SYSCFG_BASE_ADDR)
+
 
 /* Define EXTI base adddress */
 #define EXTI_BASE_ADDRESS				((APB2_BASE_ADDR) + 0x3C00UL)
@@ -226,14 +233,14 @@ typedef struct
 
 /* Enable TIMERx clock */
 #define TIMER_ENABLE_CLOCK(TIMERx) \
-	((TIMERx == TIMER1) ? (RCC->APB2ENR |= (1U << 0U)) :\
-	 (TIMERx == TIMER2) ? (RCC->APB1ENR |= (1U << 0U)) :\
-	 (TIMERx == TIMER3) ? (RCC->APB1ENR |= (1U << 1U)) :\
-	 (TIMERx == TIMER4) ? (RCC->APB1ENR |= (1U << 2U)) :\
-	 (TIMERx == TIMER5) ? (RCC->APB1ENR |= (1U << 3U)) :\
-	 (TIMERx == TIMER9) ? (RCC->APB2ENR |= (1U << 16U)) :\
-	 (TIMERx == TIMER10) ? (RCC->APB2ENR |= (1U << 17U)) :\
-	 (TIMERx == TIMER11) ? (RCC->APB2ENR |= (1U << 18U)) : 0)
+	((TIMERx == TIMER1) ? (RCC->APB2ENR |= (1U << 0)) :\
+	 (TIMERx == TIMER2) ? (RCC->APB1ENR |= (1U << 0)) :\
+	 (TIMERx == TIMER3) ? (RCC->APB1ENR |= (1U << 1)) :\
+	 (TIMERx == TIMER4) ? (RCC->APB1ENR |= (1U << 2)) :\
+	 (TIMERx == TIMER5) ? (RCC->APB1ENR |= (1U << 3)) :\
+	 (TIMERx == TIMER9) ? (RCC->APB2ENR |= (1U << 16)) :\
+	 (TIMERx == TIMER10) ? (RCC->APB2ENR |= (1U << 17)) :\
+	 (TIMERx == TIMER11) ? (RCC->APB2ENR |= (1U << 18)) : 0)
 
 
 #endif /* STM32F401XX_H_ */
