@@ -66,7 +66,13 @@ typedef enum
 #define PLLM_DIVIDE_BY_16                   16U
 
 
+ /* ====================================================
+ * User API
+ * configuration functions for application code.
+ * ==================================================== */
+
 /* Configure clock source for the RCC */
 void RCC_InitSystemClock(RCC_Clock_Speed_Typedef Clk_Speed);
+
 
 #endif /* RCC_H_ */

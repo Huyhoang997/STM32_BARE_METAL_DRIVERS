@@ -35,9 +35,18 @@ typedef struct {
 #define SCB_BASE_ADDR			0xE000ED00
 #define SCB_AIRCR  				(*(volatile uint32_t *)(SCB_BASE_ADDR + 0x0CU))
 
- 
+ /* ====================================================
+ * User API
+ * configuration functions for application code.
+ * ==================================================== */
+
+/* Enable the IRQ number */
 void NVIC_EnableIRQ(uint8_t IRQNumber);
+
+/* Disable the IRQ number */
 void NVIC_DisableIRQ(uint8_t IRQNumber);
+
+/* Set priority for the IRQ number */
 void NVIC_SetPriority(uint8_t IRQNumber, uint8_t Priority);
 
 #endif /* CORTEX_M4_H_ */

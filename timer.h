@@ -36,6 +36,7 @@ typedef struct
 #define TIMER_UPDATE_ALL_EVENT				0U
 #define TIMER_UPDATE_COUNTER_ONLY			1U
 
+
 /* Mapping TIMERx to IRQ number */
 #define TIMER_TO_IRQ(TIMERx) \
 	 ((TIMERx == TIMER1 || TIMERx == TIMER11) ? 26U :\
@@ -46,12 +47,27 @@ typedef struct
 	  (TIMERx == TIMER9) ? 24U :\
 	  (TIMERx == TIMER10) ? 25U : 0)
 
+ /* ====================================================
+ * User API
+ * configuration functions for application code.
+ * ==================================================== */
 
+/* TIMERx Init */
 void TIMER_Base_Init(TIMER_RegDef_t *TIMERx, TIMER_Config_t *Timer_Config);
+
+/* TIMERx start */
 void TIMER_Start(TIMER_RegDef_t *TIMERx);
+
+/* TIMERx stop */
 void TIMER_Stop(TIMER_RegDef_t *TIMERx);
+
+/* Configure value for PSC register */
 void TIMER_TopCount(TIMER_RegDef_t *TIMERx, uint32_t value);
+
+/* Configure value for CNT register */
 void TIMER_CountFlag(TIMER_RegDef_t *TIMERx, uint32_t value);
+
+/* Configure interrupt for TIMERx */
 void TIMER_BASE_Init_IT(TIMER_RegDef_t *TIMERx, TIMER_Config_t *Timer_Config, uint32_t Priority);
 
 #endif /* TIMER_H_*/
