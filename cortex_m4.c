@@ -35,9 +35,10 @@ void NVIC_SetPriority(uint8_t IRQNumber, uint8_t Priority)
 	index = IRQNumber / 4U;
 	/* Access the correct bit fields of the IPR register */
 	bitpos = IRQNumber % 4U;
-
+	/* Configure IRQ priority bitgroup */
+	SCB_AIRCR = (0x5FA << 16) | (0U << 8);
 	/* Set priority for the IRQ number */
 	NVIC->IPR[index] &= ~(0xFF << (bitpos * 8U));
-	NVIC->IPR[index] |= ((Priority << 4U) << (bitpos * 8U));
+	NVIC->IPR[index] |= ((Priority << 4) << (bitpos * 8U));
 }
 

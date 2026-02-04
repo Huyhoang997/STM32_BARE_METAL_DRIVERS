@@ -38,6 +38,7 @@ GPIO_Config_t button_state = {
 		.GPIO_IT_TRIGGER_MODE = GPIO_IT_FALLING_RAISING
 };
 
+
 TIMER_Config_t timer_config  = {
 		.AutoReload = 1000,
 		.ClockDivision = CLOCK_DIVINE_BY_1,
@@ -48,6 +49,7 @@ TIMER_Config_t timer_config  = {
 		.is_enable_Preload = false,
 		.CounterValue = 0
 };
+
 
 uint32_t test = 0;
 uint32_t result = 0;
@@ -77,12 +79,11 @@ void EXTI0_IRQHandler(void)
 
 int main(void)
 {
-	SCB_AIRCR = (0x5FA << 16) | (0U << 8);
-
+	RCC_InitSystemClock(RCC_CLOCK_84MHZ);
     GPIO_Init_Mode(GPIOA, &led_blink);
     GPIO_Init_Mode(GPIOA, &led_blink1);
-    TIMER_BASE_Init_IT(TIMER2, &timer_config, 0);
-    GPIO_Init_IT(GPIOB, &button_state, 2);
+    TIMER_BASE_Init_IT(TIMER2, &timer_config, 3);
+    GPIO_Init_IT(GPIOB, &button_state, 1);
 
     //result = TIMER2->ARR;
     TIMER_Start(TIMER2);

@@ -31,7 +31,13 @@ typedef struct {
 /* Define macro for the NVIC */
 #define NVIC 					((NVIC_RegDef_t *)NVIC_BASE_ADDR)
 
+/* Define IRQ's priority bit group  */
+#define SCB_BASE_ADDR			0xE000ED00
+#define SCB_AIRCR  				(*(volatile uint32_t *)(SCB_BASE_ADDR + 0x0CU))
+
+ 
 void NVIC_EnableIRQ(uint8_t IRQNumber);
 void NVIC_DisableIRQ(uint8_t IRQNumber);
 void NVIC_SetPriority(uint8_t IRQNumber, uint8_t Priority);
+
 #endif /* CORTEX_M4_H_ */
