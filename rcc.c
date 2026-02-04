@@ -7,7 +7,7 @@
 
 #include "stm32f401xx.h"
 
-/* RCC Init (HSI only) */
+/* RCC Init (HSI and PLL only) */
 void RCC_InitSystemClock(RCC_Clock_Speed_Typedef Clk_Speed) 
 {
     uint8_t pllp, pllm;
