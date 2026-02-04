@@ -4,7 +4,7 @@ Repository này chứa các driver mức thanh ghi (register-level) cho vi đi�
 
 ## Mục tiêu của Project
 
-Mục tiêu của project không chỉ là "chạy được", mà là:
+Mục tiêu của project là:
 
 - **Hiểu bản chất phần cứng** bên dưới mỗi dòng code
 - **Nắm vững clock tree**, bus architecture, và memory system
