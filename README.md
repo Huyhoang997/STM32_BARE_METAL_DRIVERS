@@ -126,56 +126,116 @@ Khi SYSCLK tăng, Flash memory không thể truy cập kịp nếu không cấu 
 
 ## 6. NVIC – Nested Vector Interrupt Controller
 
-NVIC là bộ điều khiển ngắt của ARM Cortex-M4, quản lý toàn bộ hệ thống interrupt trong MCU.
+NVIC là bộ điều khiển ngắt của ARM Cortex-M4, chịu trách nhiệm quản lý toàn bộ hệ thống interrupt trong MCU.
 
-### Chức năng chính:
+### Chức năng chính
 
 - **Enable / Disable interrupt** cho từng peripheral
 - **Cấu hình priority** (độ ưu tiên) cho từng interrupt
-- **Set / Clear pending** interrupt flag
+- **Set / Clear pending interrupt**
 - Quản lý **nested interrupt** (ngắt lồng nhau)
+
+---
 
 ### Priority System & Priority Grouping
 
-STM32F401 (Cortex-M4) sử dụng **8-bit priority** (0-255), nhưng chỉ implement **4 bit** (16 mức độ ưu tiên: 0-15).
+STM32F401 (Cortex-M4) sử dụng **8-bit priority field** (0–255), nhưng chỉ implement **4 bit** thực tế  
+→ tương đương **16 mức độ ưu tiên (0–15)**.
 
 Priority được chia thành 2 phần:
 
-- **Preemption Priority** (Group Priority) – Quyết định khả năng ngắt lồng
-- **Sub Priority** (Response Priority) – Quyết định thứ tự xử lý khi cùng preemption priority
+- **Preemption Priority (Group Priority)**  
+  Quyết định khả năng **ngắt lồng nhau**
+- **Sub Priority (Response Priority)**  
+  Quyết định **thứ tự xử lý** khi nhiều interrupt có cùng preemption priority
 
-#### Bảng phân chia Priority Bits
+---
+
+### Bảng phân chia Priority Bits
 
 | Priority Group | PRIGROUP Value | Preemption Bits | Sub-Priority Bits | Mô tả |
-|----------------|----------------|-----------------|-------------------|-------|
+|---------------|----------------|------------------|-------------------|------|
 | Group 0 | 0x07 | 0 | 4 | Không có ngắt lồng, 16 mức sub-priority |
 | Group 1 | 0x06 | 1 | 3 | 2 mức preemption, 8 mức sub-priority |
 | Group 2 | 0x05 | 2 | 2 | 4 mức preemption, 4 mức sub-priority |
 | Group 3 | 0x04 | 3 | 1 | 8 mức preemption, 2 mức sub-priority |
 | Group 4 | 0x03 | 4 | 0 | 16 mức preemption, không có sub-priority |
 
+---
 
-Trong ví dụ trên:
-- EXTI có **preemption priority cao hơn** (0 < 1) → có thể ngắt Timer ISR
-- Nếu cả 2 pending cùng lúc và cùng preemption → EXTI xử lý trước (sub-priority = 1 > 0)
+### Ví dụ minh họa
 
-### Nguyên tắc thiết kế NVIC driver:
+- EXTI có **preemption priority = 0**
+- Timer có **preemption priority = 1**
 
-- Cung cấp API rõ ràng cho enable/disable interrupt
-- Hỗ trợ cấu hình priority một cách trực quan
-- Đóng gói việc encode priority từ preemption + sub-priority
-- Cho phép user linh hoạt chọn priority group phù hợp với ứng dụng
+→ EXTI **có thể ngắt Timer ISR**
 
-### Lưu ý quan trọng:
-
-- **Priority càng nhỏ, độ ưu tiên càng cao** (0 = cao nhất)
-- Priority group nên được cấu hình **một lần duy nhất** khi khởi tạo hệ thống
-- Thay đổi priority group giữa chừng có thể gây ra hành vi không mong muốn
-- Với hệ thống đơn giản, **Priority Group 2** thường là lựa chọn cân bằng tốt
+Nếu cả hai pending cùng lúc và **cùng preemption priority**  
+→ interrupt có **sub-priority nhỏ hơn** sẽ được xử lý trước.
 
 ---
 
-## 7. Example
+### Nguyên tắc thiết kế NVIC driver
+
+- Cung cấp API rõ ràng cho enable / disable interrupt
+- Hỗ trợ cấu hình priority trực quan
+- Đóng gói logic encode priority từ  
+  **preemption + sub-priority**
+- Cho phép user lựa chọn priority group phù hợp với ứng dụng
+
+---
+
+### Lưu ý quan trọng
+
+- **Priority càng nhỏ → độ ưu tiên càng cao** (0 là cao nhất)
+- Priority group nên được cấu hình **một lần duy nhất** khi khởi tạo hệ thống
+- Thay đổi priority group trong lúc runtime có thể gây hành vi không mong muốn
+- Với hệ thống đơn giản, **Priority Group 2** là lựa chọn cân bằng tốt
+
+---
+
+## 7. SysTick Timer – System Time Base
+
+SysTick là **timer lõi (core peripheral)** của ARM Cortex-M, thường được sử dụng để xây dựng **time base cho toàn hệ thống**.
+
+Trong project này, SysTick được cấu hình để tạo **interrupt mỗi 1 ms**, làm nền cho các chức năng delay và timeout.
+
+---
+
+### Đặc điểm SysTick
+
+- Chạy trực tiếp từ **processor clock (HCLK)**
+- Counter dạng **down-counter**
+- Có khả năng tạo interrupt định kỳ
+- Hoạt động độc lập với timer peripheral (TIMx)
+
+---
+
+### Mục đích sử dụng SysTick
+
+- Tạo **system tick 1 ms**
+- Làm nền cho:
+  - Delay millisecond
+  - Timeout
+  - Scheduling đơn giản
+
+---
+
+### SysTick Initialization Flow
+
+Trình tự khởi tạo đúng theo ARM recommendation:
+
+1. Program **reload value**
+2. Clear **current value**
+3. Enable counter và interrupt
+
+```c
+reload = SystemCoreClock / 1000;   // 1 ms tick
+
+```
+---
+
+## 8. Example
 
 ### Example_Blinky_LED
 
