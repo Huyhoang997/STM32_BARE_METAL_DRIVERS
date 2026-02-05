@@ -52,6 +52,7 @@ Project được tổ chức theo các nguyên tắc sau:
 
 - **stm32f401xx.h** – Device header (register mapping)
 - **GPIO** – General Purpose I/O driver
+-  **PWM** – Pulse Width Modulation
 - **TIMER** – General-purpose Timer driver + Interrupt
 - **NVIC** – Nested Vector Interrupt Controller
 - **RCC** – Reset and Clock Control
