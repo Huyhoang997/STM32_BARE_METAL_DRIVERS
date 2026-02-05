@@ -60,7 +60,7 @@ typedef struct
 #define OC1M_PWM_MODE_1						6U			/*  Active as long as TIMx_CNT < TIMx_CCRx */
 #define OC1M_PWM_MODE_2						7U			/*  Inactive as long as TIMx_CNT < TIMx_CCR*/
 
-/* Define Output Compare fast mode */
+/* Define Output Compare fast state */
 #define OC1FE_DISABLE_FAST_MODE				0U
 #define OC1FE_ENABLE_FAST_MODE				1U
 
@@ -80,7 +80,7 @@ typedef struct
  * ==================================================== */
 
 /* TIMERx Init */
-void TIMER_Base_Init(TIMER_RegDef_t *TIMERx, TIMER_Config_t *Timer_Config);
+TIMER_Status_Typedef TIMER_Base_Init(TIMER_RegDef_t *TIMERx, TIMER_Config_t *Timer_Config);
 
 /* TIMERx start */
 void TIMER_Start(TIMER_RegDef_t *TIMERx);
@@ -95,16 +95,16 @@ void TIMER_TopCount(TIMER_RegDef_t *TIMERx, uint32_t value);
 void TIMER_CountFlag(TIMER_RegDef_t *TIMERx, uint32_t value);
 
 /* Configure interrupt for TIMERx */
-void TIMER_BASE_Init_IT(TIMER_RegDef_t *TIMERx, TIMER_Config_t *Timer_Config, uint32_t Priority);
+TIMER_Status_Typedef TIMER_BASE_Init_IT(TIMER_RegDef_t *TIMERx, TIMER_Config_t *Timer_Config, uint32_t Priority);
 
 /* TIMERx Output Compare Init */
-void TIMER_OC_Init(TIMER_RegDef_t *TIMERx, uint8_t Timer_CHx, TIMER_OC_Config_t *Timer_OC_Config);
+TIMER_Status_Typedef TIMER_OC_Init(TIMER_RegDef_t *TIMERx, uint8_t Timer_CHx, TIMER_OC_Config_t *Timer_OC_Config);
 
 /* TIMERx PWM configure duty cycle */ 
 void TIMER_PWM_SetDutyRaw(TIMER_RegDef_t *TIMERx, uint8_t Timer_CHx, uint32_t duty_raw);
 
 /* TIMERx PWM configure duty cycle percent */
-void TIMER_PWM_SetDutyCycle(TIMER_RegDef_t *TIMERx, uint8_t Timer_CHx, uint32_t duty_cycle);
+void TIMER_PWM_SetDutyPercent(TIMER_RegDef_t *TIMERx, uint8_t Timer_CHx, uint32_t duty_cycle);
 
 #endif /* TIMER_H_*/
 

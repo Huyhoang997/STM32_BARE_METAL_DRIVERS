@@ -4,12 +4,17 @@
  *  Created on: Feb 4, 2026
  *      Author: ACER
  */
-
 #include "stm32f401xx.h"
 
-/* RCC Init (HSI and PLL only) */
-void RCC_InitSystemClock(RCC_Clock_Speed_Typedef Clk_Speed) 
+/* RCC Init (HSI only) */
+RCC_Status_Typedef RCC_InitSystemClock(RCC_Clock_Speed_Typedef Clk_Speed) 
 {
+    /* Check if out of clock speed range */
+    if(Clk_Speed > RCC_CLOCK_84MHZ)
+    {
+        return RCC_OUT_RANGE_CLOCK;
+    }
+    
     uint8_t pllp, pllm;
     uint16_t plln;
 
@@ -34,7 +39,7 @@ void RCC_InitSystemClock(RCC_Clock_Speed_Typedef Clk_Speed)
         break;
 
         case RCC_CLOCK_48MHZ:
-            pllm = PLLM_DIVIDE_BY_16; plln = 192U; pllp = PLLP_DIVIDE_BY_4; 
+            pllm = PLLM_DIVIDE_BY_16; plln = 192U; pllp = PLLP_DIVIDE_BY_4;
             /* Configure gobal variable for Systick timer */
             SystemCoreClock = 48000000;
             /* Enable HSI */
@@ -42,7 +47,7 @@ void RCC_InitSystemClock(RCC_Clock_Speed_Typedef Clk_Speed)
             while(!(RCC->CR & (1U << 1)));    // Wait for the HSI ready flag
             /* Configure wait states for the flash */
             FLASH->ACR &= ~(7U << 0);
-            FLASH->ACR |= (FLASH_LATENCY_1_WS);     // 1 Wait state
+            FLASH->ACR |= FLASH_LATENCY_1_WS;     // 1 Wait state
             /* Select HSI as PLL entry clock */
             RCC->PLLCFGR &= ~(1U << 22);
             RCC->PLLCFGR |= (PLL_ENTRY_HSI_CLKSRC << 22);
@@ -66,7 +71,7 @@ void RCC_InitSystemClock(RCC_Clock_Speed_Typedef Clk_Speed)
             while(!(RCC->CR & (1U << 1)));    // Wait for the HSI ready flag
             /* Configure wait states for the flash */
             FLASH->ACR &= ~(7U << 0);
-            FLASH->ACR |= (FLASH_LATENCY_2_WS);     // 2 Wait states
+            FLASH->ACR |= FLASH_LATENCY_2_WS;     // 2 Wait states
             /* Select HSI as PLL entry clock */
             RCC->PLLCFGR &= ~(1U << 22);
             RCC->PLLCFGR |= (PLL_ENTRY_HSI_CLKSRC << 22);
@@ -91,7 +96,7 @@ void RCC_InitSystemClock(RCC_Clock_Speed_Typedef Clk_Speed)
             while(!(RCC->CR & (1U << 1)));    // Wait for the HSI ready flag
             /* Configure wait states for the flash */
             FLASH->ACR &= ~(7U << 0);
-            FLASH->ACR |= (FLASH_LATENCY_2_WS);     // 2 Wait states 
+            FLASH->ACR |= FLASH_LATENCY_2_WS;     // 2 Wait states 
             /* Select HSI as PLL entry clock */
             RCC->PLLCFGR &= ~(1U << 22);
             RCC->PLLCFGR |= (PLL_ENTRY_HSI_CLKSRC << 22);
@@ -107,4 +112,6 @@ void RCC_InitSystemClock(RCC_Clock_Speed_Typedef Clk_Speed)
         break;
 
     }
+
+    return RCC_OK;
 }

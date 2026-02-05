@@ -8,7 +8,23 @@
 
 
 /* Init GPIO port */
-void GPIO_Init_Mode(GPIO_RegDef_t *GPIOx, GPIO_Config_t *GPIO_Config) {
+GPIO_Status_Typedef GPIO_Init_Mode(GPIO_RegDef_t *GPIOx, GPIO_Config_t *GPIO_Config) 
+{
+	/* Check if NULL pointer */
+	if((GPIOx == NULL) || (GPIO_Config == NULL))
+	{
+		return GPIO_ERR;
+	}
+	/* Check if invalid GPIOx pin*/
+	if(GPIO_Config->GPIO_PIN > GPIO_PIN_15) 
+	{
+		return GPIO_INVALID_PIN;
+	}
+	/* Check if invalid mode  */
+	if(GPIO_Config->GPIO_MODE > GPIO_MODE_ANALOG)
+	{
+		return GPIO_INVALID_MODE;
+	}
 	/* 1. Enable clock for the GPIO port*/
 	GPIO_ENABLE_CLOCK(GPIOx);
 	/* 2. Configure GPIO mode */
@@ -45,14 +61,23 @@ void GPIO_Init_Mode(GPIO_RegDef_t *GPIOx, GPIO_Config_t *GPIO_Config) {
 			GPIOx->AFRH |= (GPIO_Config->GPIO_ALT_MODE << (GPIO_Config->GPIO_PIN * 4));
 		}
 	}
+
+	return GPIO_OK;
 }
 
 
 /* De-Init the GPIO port */
-void GPIO_DeInit(GPIO_RegDef_t *GPIOx)
+GPIO_Status_Typedef GPIO_DeInit(GPIO_RegDef_t *GPIOx)
 {
+	/* Check if NULL pointer */
+	if(GPIOx == NULL)
+	{
+		return GPIO_ERR;
+	}
 	/* Disable the GPIO clock*/
 	GPIO_DISABLE_CLOCK(GPIOx);
+
+	return GPIO_OK;
 }
 
 
@@ -85,9 +110,26 @@ GPIO_PinState_Typedef GPIO_PinInRead(GPIO_RegDef_t *GPIOx, uint8_t GPIO_PIN)
 
 
 /* Init GPIO intterupt */
-void GPIO_Init_IT(GPIO_RegDef_t *GPIOx, GPIO_Config_t *GPIO_Config, uint8_t Priority)
+GPIO_Status_Typedef GPIO_Init_IT(GPIO_RegDef_t *GPIOx, GPIO_Config_t *GPIO_Config, uint8_t Priority)
 {
+	/* Check if NULL pointer */
+	if((GPIOx == NULL) || (GPIO_Config == NULL))
+	{
+		return GPIO_ERR;
+	}
+	/* Check if invalid GPIOx pin*/
+	if(GPIO_Config->GPIO_PIN > GPIO_PIN_15) 
+	{
+		return GPIO_INVALID_PIN;
+	}
+	/* Check if invalid mode */
+	if(GPIO_Config->GPIO_MODE > GPIO_MODE_ANALOG)
+	{
+		return GPIO_INVALID_MODE;
+	}
+
 	uint8_t index, bitpos, portcode;
+
 	index = (GPIO_Config->GPIO_PIN) /4;
 	bitpos = (GPIO_Config->GPIO_PIN % 4) *4;
 	portcode = SYSCFG_EXTICR_PORTCODE(GPIOx);
@@ -135,4 +177,6 @@ void GPIO_Init_IT(GPIO_RegDef_t *GPIOx, GPIO_Config_t *GPIO_Config, uint8_t Prio
 	NVIC_SetPriority(EXTI_TO_IRQ(GPIO_Config->GPIO_PIN), Priority);
 	/* Enable NVIC */
 	NVIC_EnableIRQ(EXTI_TO_IRQ(GPIO_Config->GPIO_PIN));
+	
+	return GPIO_OK;
 }

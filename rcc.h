@@ -73,7 +73,7 @@ typedef enum
  * ==================================================== */
 
 /* Configure clock source for the RCC */
-void RCC_InitSystemClock(RCC_Clock_Speed_Typedef Clk_Speed);
+RCC_Status_Typedef RCC_InitSystemClock(RCC_Clock_Speed_Typedef Clk_Speed);
 
 
 #endif /* RCC_H_ */

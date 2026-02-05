@@ -42,7 +42,7 @@ GPIO_Config_t button_state = {
 
 TIMER_Config_t timer_config  = {
 		.AutoReload = 20000,
-		.ClockDivision = CLOCK_DIVINE_BY_1,
+		.ClockDivision = CLOCK_DIVINE_BY_2,
 		.CounterMode = COUNTER_MODE_UP,
 		.Prescaler = 15,
 		.is_enable_OnePulse = false,
@@ -52,11 +52,23 @@ TIMER_Config_t timer_config  = {
 };
 
 TIMER_OC_Config_t pwm_config = {
-		.OutputCompareMode = OC1M_PWM_MODE_1,
+		.OutputCompareMode = OC1M_PWM_MODE_2,
 		.is_fast_mode = true
 };
 
-uint32_t servo_test[6] = {5, 6, 7, 8, 9, 10};
+uint8_t servo_test[101] = {
+    0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+    10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+    20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+    30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
+    40, 41, 42, 43, 44, 45, 46, 47, 48, 49,
+    50, 51, 52, 53, 54, 55, 56, 57, 58, 59,
+    60, 61, 62, 63, 64, 65, 66, 67, 68, 69,
+    70, 71, 72, 73, 74, 75, 76, 77, 78, 79,
+    80, 81, 82, 83, 84, 85, 86, 87, 88, 89,
+    90, 91, 92, 93, 94, 95, 96, 97, 98, 99,
+    100
+};
 uint32_t result = 0;
 
 volatile uint32_t timer_count = 0;
@@ -84,26 +96,39 @@ void EXTI0_IRQHandler(void)
 
 int main(void)
 {
-	RCC_InitSystemClock(RCC_CLOCK_16MHZ);
+	TIMER_Status_Typedef timer_status;
+	RCC_Status_Typedef rcc_status = RCC_InitSystemClock(RCC_CLOCK_16MHZ);
+	(void)rcc_status;  // Suppress unused variable warning
 	SYS_InitTick();
     GPIO_Init_Mode(GPIOA, &led_blink);
     GPIO_Init_Mode(GPIOA, &led_blink1);
-    TIMER_Base_Init(TIMER2, &timer_config);
+    timer_status = TIMER_Base_Init(TIMER2, &timer_config);
+    if(timer_status != TIMER_OK)
+    {
+    	GPIO_PinOutSet(GPIOA, GPIO_PIN_0);
+    }
 	TIMER_OC_Init(TIMER2, TIMER_CHANNEL_2, &pwm_config);
     GPIO_Init_IT(GPIOB, &button_state, 1);
 
     //result = TIMER2->ARR;
     TIMER_Start(TIMER2);
 
-	for(int i = 0; i < 6; i++)
-	{
-	TIMER_PWM_SetDutyCycle(TIMER2, TIMER_CHANNEL_2, servo_test[i]);
-	SL_Delay_ms(1000);
-	}
 	for(;;)
 	{
-		GPIO_PinOutClear(GPIOA, GPIO_PIN_0);
+		for(int i = 0; i < 101; i++)
+		{
+		TIMER_PWM_SetDutyPercent(TIMER2, TIMER_CHANNEL_2, servo_test[i]);
 		SL_Delay_ms(40);
+		}
+
+		for(int i = 99; i > 0; i--)
+		{
+		TIMER_PWM_SetDutyPercent(TIMER2, TIMER_CHANNEL_2, servo_test[i]);
+		SL_Delay_ms(40);
+		}
+
+		//GPIO_PinOutClear(GPIOA, GPIO_PIN_0);
+		//SL_Delay_ms(40);
 		
 	}
 }

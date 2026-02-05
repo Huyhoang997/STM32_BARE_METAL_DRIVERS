@@ -10,11 +10,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-#include "gpio.h"
-#include "cortex_m4.h"
-#include "rcc.h"
-#include "flash.h"
-#include "time.h"
+#include <stddef.h>
 
 /*Flash registers definition structure */
 typedef struct
@@ -225,19 +221,27 @@ typedef struct
 	 (GPIOx == GPIOB) ? 1U :\
 	 (GPIOx == GPIOC) ? 2U :\
 	 (GPIOx == GPIOD) ? 3U :\
-	 (GPIOx == GPIOE) ? 4U:\
+	 (GPIOx == GPIOE) ? 4U :\
 	 (GPIOx == GPIOH) ? 7U : 0)
 
 /* Enable TIMERx clock */
 #define TIMER_ENABLE_CLOCK(TIMERx) \
-	((TIMERx == TIMER1) ? (RCC->APB2ENR |= (1U << 0)) :\
-	 (TIMERx == TIMER2) ? (RCC->APB1ENR |= (1U << 0)) :\
-	 (TIMERx == TIMER3) ? (RCC->APB1ENR |= (1U << 1)) :\
-	 (TIMERx == TIMER4) ? (RCC->APB1ENR |= (1U << 2)) :\
-	 (TIMERx == TIMER5) ? (RCC->APB1ENR |= (1U << 3)) :\
-	 (TIMERx == TIMER9) ? (RCC->APB2ENR |= (1U << 16)) :\
+	((TIMERx == TIMER1) ? (RCC->APB2ENR |= (1U << 0)) 	:\
+	 (TIMERx == TIMER2) ? (RCC->APB1ENR |= (1U << 0)) 	:\
+	 (TIMERx == TIMER3) ? (RCC->APB1ENR |= (1U << 1)) 	:\
+	 (TIMERx == TIMER4) ? (RCC->APB1ENR |= (1U << 2)) 	:\
+	 (TIMERx == TIMER5) ? (RCC->APB1ENR |= (1U << 3)) 	:\
+	 (TIMERx == TIMER9) ? (RCC->APB2ENR |= (1U << 16)) 	:\
 	 (TIMERx == TIMER10) ? (RCC->APB2ENR |= (1U << 17)) :\
 	 (TIMERx == TIMER11) ? (RCC->APB2ENR |= (1U << 18)) : 0)
+
+
+#include "stm32_status.h"
+#include "gpio.h"
+#include "cortex_m4.h"
+#include "rcc.h"
+#include "flash.h"
+#include "timer.h"
 
 
 #endif /* STM32F401XX_H_ */

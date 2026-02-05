@@ -1,8 +1,6 @@
 #ifndef FLASH_H_
 #define FLASH_H_
 
-#include "stm32f401xx.h"
-
 /* Define macro for the flash wait states */
 #define FLASH_LATENCY_0_WS                  0U
 #define FLASH_LATENCY_1_WS                  1U

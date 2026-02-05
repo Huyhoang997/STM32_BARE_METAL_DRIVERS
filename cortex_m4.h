@@ -42,12 +42,12 @@ typedef struct
 
 
 /* Define the NVIC base address */
-#define NVIC_BASE_ADDR			0xE000E100
+#define NVIC_BASE_ADDR			0xE000E100UL
 /* Define macro for the NVIC */
 #define NVIC 					((NVIC_RegDef_t *)NVIC_BASE_ADDR)
 
 /* Define IRQ's priority bit group  */
-#define SCB_BASE_ADDR			0xE000ED00
+#define SCB_BASE_ADDR			0xE000ED00UL
 #define SCB_AIRCR  				(*(volatile uint32_t *)(SCB_BASE_ADDR + 0x0CU))
 
 /* Define the Systick timer base address */
@@ -64,8 +64,8 @@ typedef struct
 #define STK_TICKINT_ENABLE		1U
 
 /* Configure Systick counter state */
-#define STK_DISABLE_COUNTER			0U
-#define STK_ENABLE_COUNTER			1U
+#define STK_DISABLE_COUNTER		0U
+#define STK_ENABLE_COUNTER		1U
 
 
  /* ====================================================

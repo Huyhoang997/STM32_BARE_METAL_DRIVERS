@@ -8,7 +8,6 @@
 #define GPIO_H_
 
 #include "stm32f401xx.h"
-
 /* GPIO configure structute */
 typedef struct
 {
@@ -116,10 +115,10 @@ typedef enum
  * ==================================================== */
 
 /* Init GPIO port */	 
-void GPIO_Init_Mode(GPIO_RegDef_t *GPIOx, GPIO_Config_t *GPIO_Config);
+GPIO_Status_Typedef GPIO_Init_Mode(GPIO_RegDef_t *GPIOx, GPIO_Config_t *GPIO_Config);
 
 /* De-Init the GPIO port */
-void GPIO_DeInit(GPIO_RegDef_t *GPIOx);
+GPIO_Status_Typedef GPIO_DeInit(GPIO_RegDef_t *GPIOx);
 
 /* Set the GPIO pin to High */
 void GPIO_PinOutSet(GPIO_RegDef_t *GPIOx, uint8_t GPIO_PIN);
@@ -127,14 +126,14 @@ void GPIO_PinOutSet(GPIO_RegDef_t *GPIOx, uint8_t GPIO_PIN);
 /* Set the GPIO pin to Low */
 void GPIO_PinOutClear(GPIO_RegDef_t *GPIOx, uint8_t GPIO_PIN);
 
-/* Toogle value of the GPIO pin */
+/* Read the value of the GPIO */
 GPIO_PinState_Typedef GPIO_PinInRead(GPIO_RegDef_t *GPIOx, uint8_t GPIO_PIN );
 
-/* Read the value of the GPIO */
+/* Toogle value of the GPIO pin */
 void GPIO_PinOutToggle(GPIO_RegDef_t *GPIOx, uint8_t GPIO_PIN);
 
 /* Init GPIO intterupt */
-void GPIO_Init_IT(GPIO_RegDef_t *GPIOx, GPIO_Config_t *GPIO_Config, uint8_t Priority);
+GPIO_Status_Typedef GPIO_Init_IT(GPIO_RegDef_t *GPIOx, GPIO_Config_t *GPIO_Config, uint8_t Priority);
 
 
 #endif /* GPIO_H_ */
