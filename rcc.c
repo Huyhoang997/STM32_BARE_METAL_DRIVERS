@@ -1,14 +1,6 @@
 /*
  * rcc.c
  *
- *  Created on: Feb 10, 2026
- *      Author: ACER
- */
-
-
-/*
- * rcc.c
- *
  *  Created on: Feb 4, 2026
  *      Author: ACER
  */
