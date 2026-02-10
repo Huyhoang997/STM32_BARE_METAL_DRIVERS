@@ -1,20 +1,32 @@
 /*
  * rcc.c
  *
+ *  Created on: Feb 10, 2026
+ *      Author: ACER
+ */
+
+
+/*
+ * rcc.c
+ *
  *  Created on: Feb 4, 2026
  *      Author: ACER
  */
 #include "stm32f401xx.h"
 
+/* APB/AHB prescale lookup table */
+static const uint8_t apb_prescale_table[] = {1, 1, 1, 1, 2, 4, 8, 16};
+static const uint16_t ahb_prescale_table[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 4, 8, 16, 64, 128, 256, 512};
+
 /* RCC Init (HSI only) */
-RCC_Status_Typedef RCC_InitSystemClock(RCC_Clock_Speed_Typedef Clk_Speed) 
+RCC_Status_Typedef RCC_InitSystemClock(RCC_Clock_Speed_Typedef Clk_Speed)
 {
     /* Check if out of clock speed range */
     if(Clk_Speed > RCC_CLOCK_84MHZ)
     {
         return RCC_OUT_RANGE_CLOCK;
     }
-    
+
     uint8_t pllp, pllm;
     uint16_t plln;
 
@@ -22,10 +34,10 @@ RCC_Status_Typedef RCC_InitSystemClock(RCC_Clock_Speed_Typedef Clk_Speed)
     RCC->CR &= ~(1U << 24);
 
    /* Configure clock source for the RCC */
-   /* 1.1 VCO input frequency = PLL input clock frequency / PLLM with (2 ≤ PLLM ≤ 63) (1 ≤ VCO input ≤ 2) */ 
+   /* 1.1 VCO input frequency = PLL input clock frequency / PLLM with (2 ≤ PLLM ≤ 63) (1 ≤ VCO input ≤ 2) */
    /* 1.2 VCO output frequency = VCO input frequency × PLLN with 192 ≤ PLLN ≤ 432*/
    /* 1.3 PLL output clock frequency = VCO frequency / PLLP with PLLP = 2, 4, 6, or 8*/
-    switch(Clk_Speed) 
+    switch(Clk_Speed)
     {
         case RCC_CLOCK_16MHZ:
             /* Configure gobal variable for Systick timer */
@@ -63,7 +75,7 @@ RCC_Status_Typedef RCC_InitSystemClock(RCC_Clock_Speed_Typedef Clk_Speed)
         break;
 
         case RCC_CLOCK_64MHZ:
-            pllm = PLLM_DIVIDE_BY_8; plln = 192U; pllp = PLLP_DIVIDE_BY_6; 
+            pllm = PLLM_DIVIDE_BY_8; plln = 192U; pllp = PLLP_DIVIDE_BY_6;
             /* Configure gobal variable for Systick timer */
             SystemCoreClock = 64000000;
             /* Enable HSI */
@@ -85,7 +97,7 @@ RCC_Status_Typedef RCC_InitSystemClock(RCC_Clock_Speed_Typedef Clk_Speed)
             RCC->CFGR &= ~(3U << 0);
             RCC->CFGR |= (SYS_ENTRY_PLL_CLKSRC << 0);
 
-        break; 
+        break;
 
         case RCC_CLOCK_84MHZ:
             pllm = PLLM_DIVIDE_BY_16; plln = 336U; pllp = PLLP_DIVIDE_BY_4;
@@ -96,7 +108,7 @@ RCC_Status_Typedef RCC_InitSystemClock(RCC_Clock_Speed_Typedef Clk_Speed)
             while(!(RCC->CR & (1U << 1)));    // Wait for the HSI ready flag
             /* Configure wait states for the flash */
             FLASH->ACR &= ~(7U << 0);
-            FLASH->ACR |= FLASH_LATENCY_2_WS;     // 2 Wait states 
+            FLASH->ACR |= FLASH_LATENCY_2_WS;     // 2 Wait states
             /* Select HSI as PLL entry clock */
             RCC->PLLCFGR &= ~(1U << 22);
             RCC->PLLCFGR |= (PLL_ENTRY_HSI_CLKSRC << 22);
@@ -115,3 +127,45 @@ RCC_Status_Typedef RCC_InitSystemClock(RCC_Clock_Speed_Typedef Clk_Speed)
 
     return RCC_OK;
 }
+
+/* Configure AHB clock prescale */
+void RCC_AHB_SetPrescale(RCC_AHB_Prescaler_t AHB_Prescale)
+{
+    RCC->CFGR &= ~(15U << 4);
+    RCC->CFGR |= (AHB_Prescale << 4);
+}
+
+/* Configure APB1 clock prescale */
+void RCC_APB1_SetPrescale(RCC_APB_Prescaler_t APB1_Prescale)
+{
+    RCC->CFGR &= ~(7U << 10);
+    RCC->CFGR |= (APB1_Prescale << 10);
+}
+
+/* Configure APB2 clock prescale */
+void RCC_APB2_SetPrescale(RCC_APB_Prescaler_t APB2_Prescale)
+{
+    RCC->CFGR &= ~(7U << 13);
+    RCC->CFGR |= (APB2_Prescale << 13);
+}
+
+/* Read clock frequency from APB1 peripheral bus */
+uint32_t RCC_APB1_GetFreq(void)
+{
+    uint32_t freq;
+    uint8_t apb1_prescale = (RCC->CFGR >> 10) & 7U;
+    uint8_t ahb_prescale = (RCC->CFGR >> 4) & 15U;
+    freq = (SystemCoreClock / ahb_prescale_table[ahb_prescale]) / apb_prescale_table[apb1_prescale];
+    return freq;
+}
+
+/* Read clock frequency from APB2 peripheral bus */
+uint32_t RCC_APB2_GetFreq(void)
+{
+    uint32_t freq;
+    uint8_t apb2_prescale = (RCC->CFGR >> 13 ) & 7U;
+    uint8_t ahb_prescale = (RCC->CFGR >> 4) & 15U;
+    freq = (SystemCoreClock / ahb_prescale_table[ahb_prescale]) / apb_prescale_table[apb2_prescale];
+    return freq;
+}
+

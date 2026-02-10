@@ -28,10 +28,10 @@ TIMER_Status_Typedef TIMER_Base_Init(TIMER_RegDef_t *TIMERx, TIMER_Config_t *Tim
 	TIMERx->CR1 |= (Timer_Config->ClockDivision << 8);
 
 	/* Enable/Disable preload */
-	(Timer_Config->is_enable_Preload) ? (TIMERx->CR1 |= (1U << 7)) :
+	(Timer_Config->is_enable_Preload) ? (TIMERx->CR1 |= (TIMER_ARPE_EN << 7)) :
 										(TIMERx->CR1 &= ~(1U << 7));
 	/* Enable/Disable one pulse mode */
-	(Timer_Config->is_enable_OnePulse) ? (TIMERx->CR1 |= (1U << 3)) :
+	(Timer_Config->is_enable_OnePulse) ? (TIMERx->CR1 |= (TIMER_OPM_EN << 3)) :
 										 (TIMERx->CR1 &= ~(1U << 3));
 
 	/* Configure TIMERx counter mode */
@@ -47,9 +47,9 @@ TIMER_Status_Typedef TIMER_Base_Init(TIMER_RegDef_t *TIMERx, TIMER_Config_t *Tim
 	/* Set prescale for the TIMERx */
 	TIMERx->PSC = Timer_Config->Prescaler;
 	/* Enable bit genarate event flag */
-	TIMERx->EGR |= (1U << 0);
+	TIMERx->EGR |= (TIMER_UG_EN << 0);
 	/* Clear bit event flag */
-	TIMERx->SR &= ~(1U << 0);
+	TIMERx->SR &= ~(TIMER_UIF_EN << 0);
 	/* Set counter value */
 	TIMERx->CNT = Timer_Config->CounterValue;
 
@@ -60,7 +60,7 @@ TIMER_Status_Typedef TIMER_Base_Init(TIMER_RegDef_t *TIMERx, TIMER_Config_t *Tim
 /* TIMERx start */
 void TIMER_Start(TIMER_RegDef_t *TIMERx)
 {
-	TIMERx->CR1 |= (1U << 0);
+	TIMERx->CR1 |= (TIMER_CNT_EN << 0);
 }
 
 
@@ -108,10 +108,10 @@ TIMER_Status_Typedef TIMER_BASE_Init_IT(TIMER_RegDef_t *TIMERx, TIMER_Config_t *
 	TIMERx->CR1 |= (Timer_Config->ClockDivision << 8);
 
 	/* Enable/Disable preload */
-	(Timer_Config->is_enable_Preload) ? (TIMERx->CR1 |= (1U << 7)) :
+	(Timer_Config->is_enable_Preload) ? (TIMERx->CR1 |= (TIMER_ARPE_EN << 7)) :
 										(TIMERx->CR1 &= ~(1U << 7));
 	/* Enable/Disable one pulse mode */
-	(Timer_Config->is_enable_OnePulse) ? (TIMERx->CR1 |= (1U << 3)) :
+	(Timer_Config->is_enable_OnePulse) ? (TIMERx->CR1 |= (TIMER_OPM_EN << 3)) :
 										 (TIMERx->CR1 &= ~(1U << 3));
 
 	/* Configure TIMERx counter mode */
@@ -127,13 +127,13 @@ TIMER_Status_Typedef TIMER_BASE_Init_IT(TIMER_RegDef_t *TIMERx, TIMER_Config_t *
 	/* Set prescale for the TIMERx */
 	TIMERx->PSC = Timer_Config->Prescaler;
 	/* Enable bit genarate event flag */
-	TIMERx->EGR |= (1U << 0);
+	TIMERx->EGR |= (TIMER_UG_EN << 0);
 	/* Clear bit event flag */
-	TIMERx->SR &= ~(1U << 0);
+	TIMERx->SR &= ~(TIMER_UIF_EN << 0);
 	/* Set counter value */
 	TIMERx->CNT = Timer_Config->CounterValue;
 	/* Enable interrupt bit */
-	TIMERx->DIER |= (1U << 0);
+	TIMERx->DIER |= (TIMER_UIE_EN << 0);
 
 	/* Set the priority for the TIMERx */
 	NVIC_SetPriority(TIMER_TO_IRQ(TIMERx), Priority);
@@ -143,7 +143,7 @@ TIMER_Status_Typedef TIMER_BASE_Init_IT(TIMER_RegDef_t *TIMERx, TIMER_Config_t *
 	return TIMER_OK;
 }
 
-TIMER_Status_Typedef TIMER_OC_Init(TIMER_RegDef_t *TIMERx, uint8_t Channelx, TIMER_OC_Config_t *Timer_OC_Config)
+TIMER_Status_Typedef TIMER_OC_Config(TIMER_RegDef_t *TIMERx, uint8_t Channelx, TIMER_OC_Config_t *Timer_OC_Config)
 {
 	/* Check if NULL pointer */
 	if(TIMERx == NULL ||  Timer_OC_Config == NULL)
@@ -174,7 +174,7 @@ TIMER_Status_Typedef TIMER_OC_Init(TIMER_RegDef_t *TIMERx, uint8_t Channelx, TIM
 	}
 
 	/* Enable Output Compare */
-	TIMERx->CCER |= (1U << (Channelx * 4)); 
+	TIMERx->CCER |= (TIMER_CCEx_EN << (Channelx * 4)); 
 
 	return TIMER_OK;
 }

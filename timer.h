@@ -19,7 +19,7 @@ typedef struct
 	uint8_t CounterMode;
 	bool is_enable_OnePulse;
 	uint8_t UpdateSource;
-	uint32_t CounterValue;		// Cnt value
+	uint32_t CounterValue;		// Init Counter(CNT) value
 } TIMER_Config_t;
 
 /* TIMERx Output Compare definition structure */
@@ -43,6 +43,27 @@ typedef struct
 /* Define TIMERx update event */
 #define TIMER_UPDATE_ALL_EVENT				0U
 #define TIMER_UPDATE_COUNTER_ONLY			1U
+
+/* Define TIMERx auto reload mode */
+#define TIMER_ARPE_EN						1U
+
+/* Define TIMERx One pulse mode */
+#define TIMER_OPM_EN						1U
+
+/* Define TIMERx update generation flag */
+#define TIMER_UG_EN							1U
+
+/* Define TIMERx update interrupt flag */
+#define TIMER_UIF_EN						1U
+
+/* Define TIMERx counter start */
+#define TIMER_CNT_EN						1U
+
+/* Define TIMERx enable interrupt */
+#define TIMER_UIE_EN						1U
+
+/* TIMERx Capture comper enable */
+#define TIMER_CCEx_EN						1U				
 
 /* Define macro for TIMERx Channel */
 #define TIMER_CHANNEL_1						0U
@@ -98,7 +119,7 @@ void TIMER_CountFlag(TIMER_RegDef_t *TIMERx, uint32_t value);
 TIMER_Status_Typedef TIMER_BASE_Init_IT(TIMER_RegDef_t *TIMERx, TIMER_Config_t *Timer_Config, uint32_t Priority);
 
 /* TIMERx Output Compare Init */
-TIMER_Status_Typedef TIMER_OC_Init(TIMER_RegDef_t *TIMERx, uint8_t Timer_CHx, TIMER_OC_Config_t *Timer_OC_Config);
+TIMER_Status_Typedef TIMER_OC_Config(TIMER_RegDef_t *TIMERx, uint8_t Timer_CHx, TIMER_OC_Config_t *Timer_OC_Config);
 
 /* TIMERx PWM configure duty cycle */ 
 void TIMER_PWM_SetDutyRaw(TIMER_RegDef_t *TIMERx, uint8_t Timer_CHx, uint32_t duty_raw);

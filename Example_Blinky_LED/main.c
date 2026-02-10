@@ -16,6 +16,7 @@
  ******************************************************************************
  */
 #include "stm32f401xx.h"
+#include "timer.h"
 
 GPIO_Config_t led_blink = {
 		.GPIO_MODE = GPIO_MODE_ALT,
@@ -39,6 +40,13 @@ GPIO_Config_t button_state = {
 		.GPIO_IT_TRIGGER_MODE = GPIO_IT_FALLING_RAISING
 };
 
+GPIO_Config_t uart_tx_button = {
+		.GPIO_MODE = GPIO_MODE_ALT,
+		.GPIO_PIN = GPIO_PIN_9,
+		.GPIO_ALT_MODE = GPIO_ALT_7,
+		.GPIO_OUT_SPEED = GPIO_HIGH_SPEED,
+		.GPIO_OUT_TYPE = GPIO_OUTPUT_PUSH_PULL,
+};
 
 TIMER_Config_t timer_config  = {
 		.AutoReload = 20000,
@@ -56,6 +64,15 @@ TIMER_OC_Config_t pwm_config = {
 		.is_fast_mode = true
 };
 
+USART_Config_t usart_config = {
+		.Baudrate = 9600,
+		.WordLength = DATA_8_BIT,
+		.OverSamplingMode = USART_OVERSAMPLING_BY_16,
+		.TransferMode = USART_TX,
+		.ParityType = USART_NONE_PARITY,
+		.type = STOP_BIT_1
+};
+
 uint8_t servo_test[101] = {
     0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
     10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
@@ -70,6 +87,7 @@ uint8_t servo_test[101] = {
     100
 };
 uint32_t result = 0;
+char xinchao[] = "Hello_World!";
 
 volatile uint32_t timer_count = 0;
 volatile uint32_t button_count = 0;
@@ -107,9 +125,11 @@ int main(void)
     {
     	GPIO_PinOutSet(GPIOA, GPIO_PIN_0);
     }
-	TIMER_OC_Init(TIMER2, TIMER_CHANNEL_2, &pwm_config);
+    TIMER_OC_Config(TIMER2, TIMER_CHANNEL_2, &pwm_config);
     GPIO_Init_IT(GPIOB, &button_state, 1);
-
+    GPIO_Init_Mode(GPIOA, &uart_tx_button);
+    USART_Init(USART1, &usart_config);
+    USART_Transmit(USART1, (uint8_t *)xinchao, 12);
     //result = TIMER2->ARR;
     TIMER_Start(TIMER2);
 
@@ -118,17 +138,17 @@ int main(void)
 		for(int i = 0; i < 101; i++)
 		{
 		TIMER_PWM_SetDutyPercent(TIMER2, TIMER_CHANNEL_2, servo_test[i]);
-		SL_Delay_ms(40);
+		SL_Delay_ms(10);
 		}
 
 		for(int i = 99; i > 0; i--)
 		{
 		TIMER_PWM_SetDutyPercent(TIMER2, TIMER_CHANNEL_2, servo_test[i]);
-		SL_Delay_ms(40);
+		SL_Delay_ms(10);
 		}
 
 		//GPIO_PinOutClear(GPIOA, GPIO_PIN_0);
 		//SL_Delay_ms(40);
-		
+
 	}
 }

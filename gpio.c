@@ -50,6 +50,13 @@ GPIO_Status_Typedef GPIO_Init_Mode(GPIO_RegDef_t *GPIOx, GPIO_Config_t *GPIO_Con
 	/* Select Alt mode for the GPIO pin */
 	if(GPIO_Config->GPIO_MODE == GPIO_MODE_ALT)
 	{
+		/* Check if invalid ALT functions */
+		if(GPIO_Config->GPIO_ALT_MODE > 15)
+		{
+        return GPIO_INVALID_MODE;
+		}
+
+		/* Configure ALT functions for the GPIOx */
 		if(GPIO_Config->GPIO_PIN < 8)
 		{
 			GPIOx->AFRL &= ~(15U << (GPIO_Config->GPIO_PIN * 4));
@@ -58,7 +65,7 @@ GPIO_Status_Typedef GPIO_Init_Mode(GPIO_RegDef_t *GPIOx, GPIO_Config_t *GPIO_Con
 		else
 		{
 			GPIOx->AFRH &= ~(15U << (GPIO_Config->GPIO_PIN * 4));
-			GPIOx->AFRH |= (GPIO_Config->GPIO_ALT_MODE << (GPIO_Config->GPIO_PIN * 4));
+			GPIOx->AFRH |= (GPIO_Config->GPIO_ALT_MODE << ((GPIO_Config->GPIO_PIN - 8) * 4));
 		}
 	}
 

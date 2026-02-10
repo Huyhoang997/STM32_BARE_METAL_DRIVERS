@@ -118,6 +118,45 @@ typedef struct
 } TIMER_RegDef_t;
 
 
+/* ADC1 definition structure */
+typedef struct 
+{
+    volatile uint32_t SR;
+    volatile uint32_t CR1;
+    volatile uint32_t CR2;
+    volatile uint32_t SMPR1;
+    volatile uint32_t SMPR2;
+    volatile uint32_t JOFR1;
+    volatile uint32_t JOFR2;
+    volatile uint32_t JOFR3;
+    volatile uint32_t JOFR4;
+    volatile uint32_t HTR;
+    volatile uint32_t LTR;
+    volatile uint32_t SQR1;
+    volatile uint32_t SQR2;
+    volatile uint32_t SQR3;
+    volatile uint32_t JSQR;
+    volatile uint32_t JDR1;
+    volatile uint32_t JDR2;
+    volatile uint32_t JDR3;
+    volatile uint32_t JDR4;
+    volatile uint32_t DR;
+} ADC_RegDef_t;
+
+
+/* USARTx peripheral base difinition structure */
+typedef struct 
+{
+	volatile uint32_t SR;
+	volatile uint32_t DR;
+	volatile uint32_t BRR;
+	volatile uint32_t CR1;
+	volatile uint32_t CR2; 
+	volatile uint32_t CR3; 
+	volatile uint32_t GTPR; 
+} USART_RegDef_t;
+
+
 /* Define peripheral buses base address */
 #define AHB2_BASE_ADDR					(0x50000000UL)
 #define AHB1_BASE_ADDR					(0x40020000UL)
@@ -177,6 +216,7 @@ typedef struct
 #define TIMER10							((TIMER_RegDef_t *) TIMER10_BASE_ADDR)
 #define TIMER11							((TIMER_RegDef_t *) TIMER11_BASE_ADDR)
 
+
 /* Define GPIOx base address */
 #define GPIOA_BASE_ADDR					((AHB1_BASE_ADDR) + 0x0000UL)
 #define GPIOB_BASE_ADDR					((AHB1_BASE_ADDR) + 0x0400UL)
@@ -193,6 +233,29 @@ typedef struct
 #define GPIOD							((GPIO_RegDef_t *)GPIOD_BASE_ADDR)
 #define GPIOE							((GPIO_RegDef_t *)GPIOE_BASE_ADDR)
 #define GPIOH							((GPIO_RegDef_t *)GPIOH_BASE_ADDR)
+
+
+/* Define ADC1 base address */
+#define ADC1_BASE_ADDR                  ((APB2_BASE_ADDR) + 0x2000UL)     
+/* Define macro for ADC1 address */
+#define ADC1                            ((ADC_RegDef_t *)ADC1_BASE_ADDR)    
+
+
+/* Define USART1 peripheral base address */
+#define USART1_BASE_ADDR				((APB2_BASE_ADDR) + 0x1000UL)
+/* Define macro for USART1 peripheral address */	
+#define USART1							((USART_RegDef_t *)USART1_BASE_ADDR)
+
+/* Define USART6 peripheral base address */
+#define USART6_BASE_ADDR				((APB2_BASE_ADDR) + 0x1400UL)
+/* Define macro for USART6 peripheral address */	
+#define USART6							((USART_RegDef_t *)USART6_BASE_ADDR)
+
+/* Define USART2 peripheral address */
+#define USART2_BASE_ADDR				((APB1_BASE_ADDR) + 0x4400UL)
+/* Define macro for USART2 address */
+#define USART2							((USART_RegDef_t *)USART2_BASE_ADDR)
+
 
 /* Enable RCC clock for given GPIO port */
 #define GPIO_ENABLE_CLOCK(GPIOx) \
@@ -236,12 +299,20 @@ typedef struct
 	 (TIMERx == TIMER11) ? (RCC->APB2ENR |= (1U << 18)) : 0)
 
 
+/* Enanle UARTx clock */
+#define UART_ENABLE_CLOCK(USARTx) \
+	((USARTx == USART1) ? (RCC->APB2ENR |= (1U << 4)) :\
+	 (USARTx == USART6) ? (RCC->APB2ENR |= (1U << 5)) :\
+	 (USARTx == USART2) ? (RCC->APB1ENR |= (1U << 17)) : 0)
+
+	 
 #include "stm32_status.h"
 #include "gpio.h"
 #include "cortex_m4.h"
 #include "rcc.h"
 #include "flash.h"
 #include "timer.h"
+#include "uart.h"
 
 
 #endif /* STM32F401XX_H_ */

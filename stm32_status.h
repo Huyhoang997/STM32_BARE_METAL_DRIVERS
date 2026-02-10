@@ -2,7 +2,7 @@
 #define STM32_STATUS_H_
 
 /* Define status enum for the RCC */
-typedef enum 
+typedef enum
 {
     RCC_OK,
     RCC_OUT_RANGE_CLOCK
@@ -10,7 +10,7 @@ typedef enum
 
 
 /* Define staus enum for the TIMERx*/
-typedef enum 
+typedef enum
 {
     TIMER_OK,
     TIMER_ERR,
@@ -20,7 +20,7 @@ typedef enum
 
 
 /* Define status enum for the GPIOx*/
-typedef enum 
+typedef enum
 {
     GPIO_OK,
     GPIO_ERR,
@@ -28,5 +28,22 @@ typedef enum
     GPIO_INVALID_PORT,
     GPIO_INVALID_MODE
 } GPIO_Status_Typedef;
+
+/* Define status enum for the ADC */
+typedef enum
+{
+    ADC_OK,
+    ADC_ERR,
+    ADC_DATA_LOST
+} ADC_Status_Typedef;
+
+/* Define status enum for the USARTx */
+typedef enum
+{
+    USART_OK,
+    USART_ERR,
+    USART_INVALID_DATA,
+    USART_INVALID_OVERSAMPLING
+} USART_Status_Typedef;
 
 #endif

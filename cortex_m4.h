@@ -14,7 +14,7 @@
 extern uint32_t SystemCoreClock;
 
 /* NVIC definition structure */
-typedef struct 
+typedef struct
 {
 	volatile uint32_t ISER[8];
 	uint32_t RESERVED1[24];
@@ -32,7 +32,7 @@ typedef struct
 } NVIC_RegDef_t;
 
 /* Systick timer registers difinition structure */
-typedef struct 
+typedef struct
 {
 	volatile uint32_t CTRL;
 	volatile uint32_t LOAD;
@@ -89,3 +89,4 @@ void SYS_InitTick(void);
 void SL_Delay_ms(uint32_t ms);
 
 #endif /* CORTEX_M4_H_ */
+
