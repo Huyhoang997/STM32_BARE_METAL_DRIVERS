@@ -1,8 +1,6 @@
 #ifndef STM32_STATUS_H_
 #define STM32_STATUS_H_
 
-#include "stm32f401xx.h"
-
 /* Define status enum for the RCC */
 typedef enum
 {
@@ -45,6 +43,7 @@ typedef enum
     USART_OK,
     USART_ERR,
     USART_INVALID_DATA,
+    USART_TIMEOUT,
     USART_INVALID_OVERSAMPLING
 } USART_Status_Typedef;
 

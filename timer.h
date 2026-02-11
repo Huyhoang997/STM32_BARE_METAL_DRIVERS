@@ -69,7 +69,7 @@ typedef struct
 #define TIMER_CHANNEL_1						0U
 #define TIMER_CHANNEL_2						1U
 #define TIMER_CHANNEL_3						2U
-#define TIEMR_CHANNEL_4						3U
+#define TIMER_CHANNEL_4						3U
 
 /* Define Output Compare active mode */
 #define OC1M_FROZEN							0U

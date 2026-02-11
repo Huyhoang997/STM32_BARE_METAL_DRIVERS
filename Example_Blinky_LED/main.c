@@ -17,6 +17,7 @@
  */
 #include "stm32f401xx.h"
 #include "timer.h"
+#include <string.h>
 
 GPIO_Config_t led_blink = {
 		.GPIO_MODE = GPIO_MODE_ALT,
@@ -40,9 +41,17 @@ GPIO_Config_t button_state = {
 		.GPIO_IT_TRIGGER_MODE = GPIO_IT_FALLING_RAISING
 };
 
-GPIO_Config_t uart_tx_button = {
+GPIO_Config_t uart_tx_gpio = {
 		.GPIO_MODE = GPIO_MODE_ALT,
 		.GPIO_PIN = GPIO_PIN_9,
+		.GPIO_ALT_MODE = GPIO_ALT_7,
+		.GPIO_OUT_SPEED = GPIO_HIGH_SPEED,
+		.GPIO_OUT_TYPE = GPIO_OUTPUT_PUSH_PULL,
+};
+
+GPIO_Config_t uart_rx_gpio = {
+		.GPIO_MODE = GPIO_MODE_ALT,
+		.GPIO_PIN = GPIO_PIN_10,
 		.GPIO_ALT_MODE = GPIO_ALT_7,
 		.GPIO_OUT_SPEED = GPIO_HIGH_SPEED,
 		.GPIO_OUT_TYPE = GPIO_OUTPUT_PUSH_PULL,
@@ -60,7 +69,7 @@ TIMER_Config_t timer_config  = {
 };
 
 TIMER_OC_Config_t pwm_config = {
-		.OutputCompareMode = OC1M_PWM_MODE_2,
+		.OutputCompareMode = OC1M_PWM_MODE_1,
 		.is_fast_mode = true
 };
 
@@ -68,7 +77,7 @@ USART_Config_t usart_config = {
 		.Baudrate = 9600,
 		.WordLength = DATA_8_BIT,
 		.OverSamplingMode = USART_OVERSAMPLING_BY_16,
-		.TransferMode = USART_TX,
+		.TransferMode = USART_TX_RX,
 		.ParityType = USART_NONE_PARITY,
 		.type = STOP_BIT_1
 };
@@ -88,6 +97,8 @@ uint8_t servo_test[101] = {
 };
 uint32_t result = 0;
 char xinchao[] = "Hello_World!";
+uint8_t received_buf[13];
+
 
 volatile uint32_t timer_count = 0;
 volatile uint32_t button_count = 0;
@@ -127,28 +138,29 @@ int main(void)
     }
     TIMER_OC_Config(TIMER2, TIMER_CHANNEL_2, &pwm_config);
     GPIO_Init_IT(GPIOB, &button_state, 1);
-    GPIO_Init_Mode(GPIOA, &uart_tx_button);
+    GPIO_Init_Mode(GPIOA, &uart_tx_gpio);
+	GPIO_Init_Mode(GPIOA, &uart_rx_gpio);
     USART_Init(USART1, &usart_config);
     USART_Transmit(USART1, (uint8_t *)xinchao, 12);
+	//USART_Receive(USART1, received_buf, 12);
     //result = TIMER2->ARR;
     TIMER_Start(TIMER2);
 
 	for(;;)
 	{
-		for(int i = 0; i < 101; i++)
+		USART_Receive(USART1, received_buf, 13, 1000);
+		if(strcmp((char*)received_buf, "Servo_quay_90") == 0)
 		{
-		TIMER_PWM_SetDutyPercent(TIMER2, TIMER_CHANNEL_2, servo_test[i]);
-		SL_Delay_ms(10);
+    		TIMER_PWM_SetDutyPercent(TIMER2, TIMER_CHANNEL_2, 5);
 		}
-
-		for(int i = 99; i > 0; i--)
+		if(strcmp((char*)received_buf, "Servo_quay_18") == 0)
 		{
-		TIMER_PWM_SetDutyPercent(TIMER2, TIMER_CHANNEL_2, servo_test[i]);
-		SL_Delay_ms(10);
+    		TIMER_PWM_SetDutyPercent(TIMER2, TIMER_CHANNEL_2, 8);
 		}
-
-		//GPIO_PinOutClear(GPIOA, GPIO_PIN_0);
-		//SL_Delay_ms(40);
+		if(strcmp((char*)received_buf, "Servo_quay_00") == 0)
+		{
+    		TIMER_PWM_SetDutyPercent(TIMER2, TIMER_CHANNEL_2, 10);
+		}
 
 	}
 }

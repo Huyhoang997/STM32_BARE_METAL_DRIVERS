@@ -10,8 +10,9 @@
 
 #include "stm32f401xx.h"
 
-/* Extern gobal variable to get RCC clock */
+/* Extern gobal variable to get RCC clock & SysTick */
 extern uint32_t SystemCoreClock;
+extern uint32_t uwTick;
 
 /* NVIC definition structure */
 typedef struct

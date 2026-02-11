@@ -34,6 +34,10 @@ typedef struct
 /* Transmit data register */
 #define USART_TXE_DATA_NOT_TRANSFERRED  0U
 #define USART_TXE_DATA_TRANFERRED  		1U
+/* Receive data register */
+#define USART_RXNE_DATA_NO_RECEIVED     0U
+#define USART_RXNE_DATA_READY           1U
+
 /* USART transfer mode */
 #define USART_TX                        (1U << 3)
 #define USART_RX                        (1U << 2)
@@ -66,7 +70,11 @@ typedef struct
 
  /* USART Init function */
 USART_Status_Typedef USART_Init(USART_RegDef_t *USARTx, USART_Config_t *USART_Config);
+
+/* USART data transmit function */
 USART_Status_Typedef USART_Transmit(USART_RegDef_t *USARTx, uint8_t *transmit_data, uint16_t size);
-USART_Status_Typedef USART_Receive(USART_RegDef_t *USARTx, uint8_t *receive_data, uint16_t size, uint32_t timeout);
+
+/* USART data receive function */
+USART_Status_Typedef USART_Receive(USART_RegDef_t *USARTx, uint8_t *receive_data, uint16_t size, uint16_t timeout);
 
 #endif

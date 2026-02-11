@@ -125,3 +125,72 @@ USART_Status_Typedef USART_Transmit(USART_RegDef_t *USARTx, uint8_t *transmit_da
 
     return USART_OK;
 }
+
+
+USART_Status_Typedef USART_Receive(USART_RegDef_t *USARTx, uint8_t *receive_data, uint16_t size, uint16_t timeout)
+{
+    /* Check if NULL pointer */
+    if(USARTx == NULL || receive_data == NULL)
+    {
+        return USART_ERR;
+    }
+    /* Check if invalid data */
+    if(size == 0U)
+    {
+        return USART_INVALID_DATA;
+    }
+
+    uint8_t *pdata8bit;
+    uint16_t *pdata16bit;
+    uint16_t RxBufCount = size;
+    uint32_t timecheck = uwTick;
+    /* Check the wordlength: if 9bit wordlength then use 16 bit data pointer 
+    else if 8 bit then use 8bit data pointer */
+    if(((USARTx->CR1 >> 12) & 1U) == DATA_8_BIT && !((USARTx->CR1 >> 10) & 1U)) 
+    {
+        pdata8bit = receive_data;
+        pdata16bit = NULL;
+    }
+    else 
+    {
+        pdata16bit =  (uint16_t*)receive_data;
+        pdata8bit = NULL;
+    }
+
+
+    
+    while (RxBufCount > 0)
+    {
+        if(((USARTx->SR >> 5) & 1U) == USART_RXNE_DATA_READY)
+        {
+            /* Configure 9 bit data -> use uint16_t variable to store the data */
+            if(pdata8bit == NULL)
+            {
+                *pdata16bit = (uint16_t )(USARTx->DR & 0x01FF);
+                pdata16bit++;
+            }
+            else 
+            {
+                /* Configure 8 bit data & parity mode */
+                /* 1. Enable 8 bit data & disable parity */
+                if((((USARTx->CR1 >> 10U) & 1U) == USART_NONE_PARITY))
+                {
+                    *pdata8bit = (uint8_t)(USARTx->DR & 0x00FF);
+                }
+                else /* 2. Enable 8 bit data & enable parity */
+                {
+                    *pdata8bit = (uint8_t)(USARTx->DR & 0x007F);
+                }
+                pdata8bit++;
+            }
+            RxBufCount--;
+            timecheck = uwTick;
+        }
+        if(((uwTick - timecheck) > timeout) || (timeout == 0U))
+        {
+            return USART_TIMEOUT;
+        }
+    }
+
+    return USART_OK;
+}
