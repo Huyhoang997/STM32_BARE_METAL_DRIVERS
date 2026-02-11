@@ -22,8 +22,8 @@ Mục tiêu của project là:
 - [6. NVIC – Nested Vector Interrupt Controller](#6-nvic--nested-vector-interrupt-controller)
 - [7. SysTick Timer – System Time Base](#7-systick-timer--system-time-base)
 - [8. Example](#8-example)
+- [9. USART – Servo Control Example](#9-usart--servo-control-example)
 - [Kết luận](#kết-luận)
-- 
 ---
 
 ## 1. Mục tiêu & Phạm vi
@@ -57,7 +57,8 @@ Project được tổ chức theo các nguyên tắc sau:
 - **NVIC** – Nested Vector Interrupt Controller
 - **RCC** – Reset and Clock Control
 - **FLASH** – Flash access & wait state configuration
-- **SysTick** – System Tick timer 
+- **SysTick** – System Tick timer
+- **USART** – Universal Synchronous/Asynchronous Receiver/Transmitter 
 
 ---
 
@@ -276,6 +277,36 @@ Ví dụ này:
 - Minh họa cách cấu hình interrupt và priority
 - Nền tảng cho các example nâng cao hơn trong tương lai (PWM, Input Capture, v.v.)
 
+---
+## 9. USART – Servo Control Example
+
+USART driver được sử dụng trong example để xây dựng một hệ thống điều khiển servo thông qua giao tiếp UART.
+
+### Mô tả hoạt động
+
+- USART1 được cấu hình ở baudrate **9600**, chế độ **8N1**.
+- Hệ thống nhận command dạng chuỗi từ PC (qua Serial Terminal).
+- Dựa trên nội dung chuỗi nhận được, PWM duty cycle của Timer sẽ được điều chỉnh để thay đổi góc quay servo.
+
+Ví dụ command:
+
+- `"Servo_quay_90"` → đặt duty tương ứng góc 90°
+- `"Servo_quay_18"` → đặt duty tương ứng góc 180°
+- `"Servo_quay_00"` → đặt duty tương ứng góc 0°
+
+### Mục đích
+
+Example này minh họa sự kết hợp giữa:
+
+- **USART (Communication layer)**
+- **Timer PWM (Control layer)**
+- Xử lý dữ liệu hoàn toàn ở mức register-level (không sử dụng HAL)
+
+Qua đó thể hiện khả năng:
+
+- Cấu hình peripheral trực tiếp từ thanh ghi
+- Kết nối nhiều module driver trong một ứng dụng thực tế
+- Xây dựng hệ thống điều khiển servo dựa trên command UART
 ---
 
 ## Kết luận
